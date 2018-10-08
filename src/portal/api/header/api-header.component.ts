@@ -19,27 +19,52 @@ import TicketService from "../../../services/ticket.service";
 const ApiHeaderComponent: ng.IComponentOptions = {
   bindings: {
     api: '<',
-    apiRatingSummary: '<'
+    apiRatingSummary: '<',
+    apiPortalHeaders: '<'
   },
   template: require('./api-header.html'),
-  controller: function(Constants, ApiService: ApiService, $state, $stateParams, $rootScope, TicketService) {
+  controller: function(
+    Constants,
+    ApiService: ApiService,
+    $state,
+    $stateParams,
+    $rootScope,
+    TicketService: TicketService,
+    $window) {
     'ngInject';
     this.ratingEnabled = ApiService.isRatingEnabled();
     this.supportEnabled = TicketService.isSupportEnabled();
-
-    this.getEndpoint = function () {
-      return Constants.portal.entrypoint + this.api.context_path;
-    };
-
-    this.completeHeader = function () {
-      return $state.is('portal.api.detail');
-    };
 
     $rootScope.$on('onRatingSave', () => {
       ApiService.getApiRatingSummaryByApi($stateParams.apiId).then((response) => {
         this.apiRatingSummary = response.data;
       });
     });
+
+    this.$onInit = () => {
+      const apiNavbar = document.getElementById("api-navbar");
+      const headerDetail = document.getElementById("header-detail");
+      const headerTitle = document.getElementById("header");
+      const plans = document.getElementById("plans");
+      $window.onscroll = () => {
+        if ($window.pageYOffset > 0) {
+          headerDetail.style.display="none";
+          headerTitle.classList.add("sticky");
+          apiNavbar.classList.add("sticky");
+          plans.classList.add("sticky");
+        } else {
+          headerDetail.style.display="flex";
+          headerTitle.classList.remove("sticky");
+          apiNavbar.classList.remove("sticky");
+          plans.classList.remove("sticky");
+        }
+      };
+    };
+
+    this.scrollToPlans = () => {
+      const plans = document.getElementById("plans");
+      plans.scrollIntoView();
+    }
   }
 };
 

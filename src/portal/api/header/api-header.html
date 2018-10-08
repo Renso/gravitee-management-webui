@@ -15,10 +15,10 @@
     limitations under the License.
 
 -->
-<section id="header" class="md-whiteframe-5dp" layout="row" layout-align="center center" gv-theme-element="portal.api.header">
+<section id="header" class="api-header md-whiteframe-5dp" layout="row" layout-align="center center" gv-theme-element="portal.api.header">
 
-  <div layout="column" flex="65">
-    <div layout="row" layout-align="start center">
+  <div layout="column" flex="70">
+    <div id="header-title" class="api-header-title" layout="row" layout-align="start center">
       <img height="60" ng-src="{{$ctrl.api.picture_url}}" alt="api-logo" />
       <div layout="column">
         <span class="api-title" ui-sref="portal.api.detail({apiId: $ctrl.api.id})">{{::$ctrl.api.name}}</span>
@@ -35,28 +35,26 @@
       </div>
     </div>
 
-    <div layout="row" style="margin-top: 18px;" ng-if="$ctrl.completeHeader()">
-      <div layout="row" flex="50">
+    <div id="header-detail" class="api-header-detail" layout="row" layout-align="space-between center">
+      <div layout="row" flex="45">
         <span class="api-description">{{::$ctrl.api.description}}</span>
       </div>
 
-      <div class="api-description" layout="column" layout-align="start start" flex="30">
-        <span>{{'api.version' | translate}}: {{::$ctrl.api.version}}</span>
-        <span ng-if="$ctrl.api.context_path">{{'api.endpoint' | translate}}: {{::$ctrl.getEndpoint()}}</span>
-        <span>{{'api.owner' | translate}}: {{$ctrl.api.owner.displayName}}</span>
-        <span ng-if="$ctrl.api.deployed_at">{{'api.publishedAt' | translate}}: {{::$ctrl.api.deployed_at | humanDateFilter}}</span>
+      <div class="api-description" layout="column" layout-align="start start" flex="45">
+        <span ng-repeat="header in $ctrl.apiPortalHeaders" ng-if="header.value">{{ header.name | translate }}: {{::header.value}}</span>
       </div>
-
-      <div flex></div>
     </div>
   </div>
 </section>
 
-<div class="api-nav">
+<div class="api-nav" id="api-navbar">
   <div class="container">
     <ul>
       <li ui-sref-active="active">
         <a ui-sref="portal.api.detail({apiId: $ctrl.api.id})">Overview</a>
+      </li>
+      <li ui-sref-active="active">
+        <a ng-click="$ctrl.scrollToPlans()">Plans</a>
       </li>
       <li ui-sref-active="active">
         <a ui-sref="portal.api.pages({apiId: $ctrl.api.id})">{{'api.documentation.title' | translate}}</a>
